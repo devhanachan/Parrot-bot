@@ -8,10 +8,25 @@ const dTK = process.env.TOKEN!;
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessages
   ]
 });
+// load events
+const eventsPath = path.join(import.meta.dir, 'events');
+const eventsFiles = readdirSync(eventsPath).filter(f => f.endsWith('.ts'));
 
+for (const file of eventsFiles) {
+  const event = await import(`./events/${file}`);
+  const ev = event.default;
+
+  if(ev.once) {
+    client.once(ev.name, (...args) => ev.execute(...args));
+  } else {
+    client.on(ev.name, (...args) => ev.execute(...args));
+  }
+}
 client.commands = new Collection();
 
 const commandsPath = path.join(process.cwd(), "commands");
