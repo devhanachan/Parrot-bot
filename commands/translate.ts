@@ -1,6 +1,8 @@
 import { SlashCommandBuilder } from "discord.js";
 import type { Command } from "../types";
 import axios from "axios";
+import { googleTranslate } from "../apis/google";
+import { createTranslateEmbed } from '../embeds/translateEmbed';
 
 export const command: Command = {
   data: new SlashCommandBuilder()
@@ -27,11 +29,7 @@ export const command: Command = {
     await interaction.deferReply(); // prevents "interaction failed"
 
     try {
-      const url = encodeURI(
-        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${lang}&dt=t&q=${msg}`
-      );
-
-      const { data } = await axios.get(url);
+      const data=await googleTranslate(msg, lang);
 
       // Extract translated text
       let translated = "";
@@ -40,11 +38,20 @@ export const command: Command = {
       });
 
       // Detect source language
-      const fromLang = data[2] === data[8][0][0] ? data[2] : data[8][0][0];
+      const fromLang =
+        data?.[2] ??
+        data?.[8]?.[0]?.[0] ??
+        'unknown';
 
-      await interaction.editReply(
-        `**Translation:** ${translated}\n**From:** ${fromLang}\n**To:** ${lang}`
-      );
+      await interaction.editReply({
+        embeds: [
+          createTranslateEmbed({
+            from: fromLang,
+            to: lang,
+            result: translated
+          })
+        ]
+      });
     } catch (err) {
       console.error(err);
       await interaction.editReply("An error occurred while translating.");
