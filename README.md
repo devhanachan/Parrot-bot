@@ -16,7 +16,9 @@ extend, and add new commands.
     │ .env
     │
     ├── apis/
+    │   └──google.ts
     ├── embeds/
+    │   └── translateEmbed.ts
     ├── events/
     │   └── messageCreate.ts
     │
