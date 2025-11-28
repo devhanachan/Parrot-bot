@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { command } from "../commands/translate";
+import { command } from "../../commands/translate";
 
 describe("translate command (real API + console output)", () => {
   it("translates text and logs output", async () => {
