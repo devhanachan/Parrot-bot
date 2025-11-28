@@ -1,7 +1,17 @@
-import { Client, Events, GatewayIntentBits, Collection } from "discord.js";
-import { readdirSync } from "node:fs";
+import {
+  Client,
+  Events,
+  GatewayIntentBits,
+  Collection,
+  type ChatInputCommandInteraction,
+  type MessageContextMenuCommandInteraction,
+  type UserContextMenuCommandInteraction,
+} from "discord.js";
+import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import "dotenv/config";
+import type { Command } from "./types";
 
 const dTK = process.env.TOKEN!;
 
@@ -10,45 +20,72 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMessages
-  ]
+    GatewayIntentBits.GuildMessages,
+  ],
 });
-// load events
-const eventsPath = path.join(import.meta.dir, 'events');
-const eventsFiles = readdirSync(eventsPath).filter(f => f.endsWith('.ts'));
+
+const eventsPath = path.join(import.meta.dir, "events");
+const eventsFiles = readdirSync(eventsPath).filter((f) => f.endsWith(".ts"));
 
 for (const file of eventsFiles) {
   const event = await import(`./events/${file}`);
   const ev = event.default;
 
-  if(ev.once) {
-    client.once(ev.name, (...args) => ev.execute(...args));
-  } else {
-    client.on(ev.name, (...args) => ev.execute(...args));
-  }
+  if (ev.once) client.once(ev.name, (...args) => ev.execute(...args));
+  else client.on(ev.name, (...args) => ev.execute(...args));
 }
-client.commands = new Collection();
+
+function walk(dir: string): string[] {
+  const entries = readdirSync(dir).map((name) => path.join(dir, name));
+  const out: string[] = [];
+  for (const p of entries) {
+    const st = statSync(p);
+    if (st.isDirectory()) out.push(...walk(p));
+    else out.push(p);
+  }
+  return out;
+}
+
+client.commands = new Collection<string, Command<any>>();
 
 const commandsPath = path.join(process.cwd(), "commands");
-const files = readdirSync(commandsPath).filter(f => f.endsWith(".ts"));
+const files = walk(commandsPath).filter((f) => f.endsWith(".ts"));
 
-for (const file of files) {
-  const filePath = path.join(commandsPath, file);
-  const { command } = await import(filePath);
-  client.commands.set(command.data.name, command);
+for (const filePath of files) {
+  const imported = await import(pathToFileURL(filePath).href);
+  const cmd: Command<any> | undefined = imported.command || imported.default;
+  if (!cmd?.data?.name) continue;
+  client.commands.set(cmd.data.name, cmd);
 }
 
-client.on(Events.ClientReady, readyClient => {
+client.on(Events.ClientReady, (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}! 🦜`);
 });
 
-client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isChatInputCommand()) return;
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (interaction.isChatInputCommand()) {
+    const cmd = client.commands.get(interaction.commandName) as
+      | Command<ChatInputCommandInteraction>
+      | undefined;
+    if (cmd) await cmd.execute(interaction);
+    return;
+  }
 
-  const cmd = client.commands.get(interaction.commandName);
-  if (!cmd) return;
+  if (interaction.isMessageContextMenuCommand()) {
+    const cmd = client.commands.get(interaction.commandName) as
+      | Command<MessageContextMenuCommandInteraction>
+      | undefined;
+    if (cmd) await cmd.execute(interaction);
+    return;
+  }
 
-  await cmd.execute(interaction);
+  if (interaction.isUserContextMenuCommand()) {
+    const cmd = client.commands.get(interaction.commandName) as
+      | Command<UserContextMenuCommandInteraction>
+      | undefined;
+    if (cmd) await cmd.execute(interaction);
+    return;
+  }
 });
 
 client.login(dTK);
