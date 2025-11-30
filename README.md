@@ -7,6 +7,27 @@ extend, and add new commands.
 
 ---
 
+## how to use the context menu
+
+Add GIFs to `assets/` and reference them here.
+
+<p align="left">
+  
+![Discord_PzTpLhTcnx](https://github.com/user-attachments/assets/39a8497c-95f2-461f-ae47-7abc0f72f5c3)
+
+
+## selecting roles
+
+![Discord_YPTwaWwJuQ](https://github.com/user-attachments/assets/acd1afd9-411e-4220-801b-3a3d5c41a42d)
+
+</p>
+
+<p align="left">
+  <img src="./assets/demo-selfroles.gif" width="420" alt="Self roles panel demo" />
+</p>
+
+---
+
 ## Project Structure
 
     project/
@@ -21,14 +42,16 @@ extend, and add new commands.
     │   └── translateEmbed.ts
     ├── events/
     │   └── messageCreate.ts
+    │   └── interactionCreate.ts   
     │
     ├── commands/
+    │   ├── langpanel.ts
     │   ├── ping.ts
-    │   ├── myroles.ts
+    │   ├── Selectrole.ts
     │   ├── translate.ts
-    │   ├── stealpfp.ts
+    │   ├── userpfp.ts
     │   └── context/
-    │       └── ping-message.ts
+    │       └── translate.ts
     │
     ├── main.ts
     ├── register.ts
@@ -169,6 +192,22 @@ After adding a context menu command, run:
 Then restart the bot:
 
     bun run main.ts
+
+---
+
+## Feature Notes
+
+### `/langpanel`
+Admin-only command to post a public language role panel.
+Users can only have one language role at a time. If a user has no language role, default is `en`.
+
+### `/selfroles`
+Admin-only command to post a public self role panel.
+Users pick roles and press Submit. Submit/Reset replies are ephemeral to reduce noise.
+
+### Context menu: `Translate`
+Right-click a message → Apps → Translate  
+Target language is based on the user's language role. Reply is ephemeral and plain text only.
 
 ---
 
