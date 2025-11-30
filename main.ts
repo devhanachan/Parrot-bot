@@ -58,34 +58,5 @@ for (const filePath of files) {
   client.commands.set(cmd.data.name, cmd);
 }
 
-client.on(Events.ClientReady, (readyClient) => {
-  console.log(`Logged in as ${readyClient.user.tag}! 🦜`);
-});
-
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (interaction.isChatInputCommand()) {
-    const cmd = client.commands.get(interaction.commandName) as
-      | Command<ChatInputCommandInteraction>
-      | undefined;
-    if (cmd) await cmd.execute(interaction);
-    return;
-  }
-
-  if (interaction.isMessageContextMenuCommand()) {
-    const cmd = client.commands.get(interaction.commandName) as
-      | Command<MessageContextMenuCommandInteraction>
-      | undefined;
-    if (cmd) await cmd.execute(interaction);
-    return;
-  }
-
-  if (interaction.isUserContextMenuCommand()) {
-    const cmd = client.commands.get(interaction.commandName) as
-      | Command<UserContextMenuCommandInteraction>
-      | undefined;
-    if (cmd) await cmd.execute(interaction);
-    return;
-  }
-});
 
 client.login(dTK);

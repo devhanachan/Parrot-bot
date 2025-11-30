@@ -6,6 +6,7 @@ import type {
   ChatInputCommandInteraction,
   MessageContextMenuCommandInteraction,
   UserContextMenuCommandInteraction,
+  ClientEvents
 } from "discord.js";
 
 export type AnyInteraction =
@@ -19,7 +20,12 @@ export type CommandData =
   | SlashCommandOptionsOnlyBuilder
   | ContextMenuCommandBuilder;
 
-// ✅ default เป็น ChatInput -> slash command เดิมไม่พัง
+export type Event<K extends keyof ClientEvents = keyof ClientEvents> = {
+  name: K;
+  once?: boolean;
+  execute: (...args: ClientEvents[K]) => any | Promise<any>;
+};
+
 export interface Command<T extends AnyInteraction = ChatInputCommandInteraction> {
   data: CommandData;
   execute: (interaction: T) => Promise<void>;
