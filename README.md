@@ -9,7 +9,6 @@ extend, and add new commands.
 
 ## how to use the context menu
 
-Add GIFs to `assets/` and reference them here.
 
 <p align="left">
   
