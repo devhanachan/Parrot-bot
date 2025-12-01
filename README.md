@@ -1,224 +1,341 @@
-# 🦜 Parrot Bot — Discord Bot (TypeScript + Bun)
+# 🦜 Parrot Bot
 
-Parrot Bot is a simple and clean Discord bot template built with
-**TypeScript**, **discord.js v14**, and **Bun**.\
-This project is designed to be easy for contributors to understand,
-extend, and add new commands.
+A feature-rich Discord bot built with **TypeScript**, **Discord.js v14**, and **Bun** runtime. Designed for translation, role management, and server moderation.
 
----
-
-## how to use the context menu
-
-
-<p align="left">
-  
-![Discord_PzTpLhTcnx](https://github.com/user-attachments/assets/39a8497c-95f2-461f-ae47-7abc0f72f5c3)
-
-
-## selecting roles
-
-![Discord_YPTwaWwJuQ](https://github.com/user-attachments/assets/acd1afd9-411e-4220-801b-3a3d5c41a42d)
-
-</p>
-
-<p align="left">
-  <img src="./assets/demo-selfroles.gif" width="420" alt="Self roles panel demo" />
-</p>
+![Discord.js](https://img.shields.io/badge/Discord.js-v14-5865F2?style=flat-square&logo=discord&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Bun](https://img.shields.io/badge/Bun-Runtime-fbf0df?style=flat-square&logo=bun&logoColor=black)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
 ---
 
-## Project Structure
+## ✨ Features
 
-    project/
-    │ package.json
-    │ tsconfig.json
-    │ bun.lock
-    │ .env
-    │
-    ├── apis/
-    │   └──google.ts
-    ├── embeds/
-    │   └── translateEmbed.ts
-    ├── events/
-    │   └── messageCreate.ts
-    │   └── interactionCreate.ts   
-    │
-    ├── commands/
-    │   ├── langpanel.ts
-    │   ├── ping.ts
-    │   ├── Selectrole.ts
-    │   ├── translate.ts
-    │   ├── userpfp.ts
-    │   └── context/
-    │       └── translate.ts
-    │
-    ├── main.ts
-    ├── register.ts
-    └── types.ts
+| Feature | Description |
+|---------|-------------|
+| 🌐 **Translation** | Translate text via slash commands or context menu |
+| 🎭 **Self-Roles** | Interactive role selection panel for members |
+| 🗣️ **Language Roles** | Set target translation language via role buttons |
+| 🔗 **URL Moderation** | Automatic URL detection and removal |
+| 🖼️ **Avatar Fetcher** | Retrieve any user's profile picture by ID |
 
 ---
 
-## `types.ts` — Command Interface
+## 📸 Preview
 
-This file defines a shared `Command` interface used by both **Slash Commands**
-and **Context Menu Commands**.
+### Context Menu Translation
+![Context Menu Demo](https://github.com/user-attachments/assets/39a8497c-95f2-461f-ae47-7abc0f72f5c3)
 
-It ensures:
-- consistent structure
-- TypeScript autocomplete
-- safer dynamic loading of commands
+### Role Selection Panel
+![Role Selection Demo](https://github.com/user-attachments/assets/acd1afd9-411e-4220-801b-3a3d5c41a42d)
 
 ---
 
-## `register.ts` — Register Commands to Discord
+## 📁 Project Structure
 
-Uploads all application commands (slash + context menu) to Discord via REST API.
-
-Run this **whenever commands change**:
-
-    bun run register.ts
-
-Tip: If you set `GUILD_ID` in `.env`, commands will appear instantly in that server.
+```
+Parrot-bot/
+├── src/
+│   ├── commands/
+│   │   ├── context/          # Context menu commands
+│   │   │   └── translate.ts
+│   │   └── slash/            # Slash commands
+│   │       ├── langpanel.ts
+│   │       ├── ping.ts
+│   │       ├── selfroles.ts
+│   │       ├── translate.ts
+│   │       └── userpfp.ts
+│   ├── config/
+│   │   └── env.ts            # Environment configuration
+│   ├── constants/
+│   │   ├── languages.ts      # Language codes & mappings
+│   │   └── roles.ts          # Role configuration
+│   ├── embeds/
+│   │   └── translateEmbed.ts # Translation result embed
+│   ├── events/
+│   │   ├── interactionCreate.ts
+│   │   └── messageCreate.ts
+│   ├── handlers/
+│   │   ├── langButtonHandler.ts
+│   │   └── selfRolesHandler.ts
+│   ├── services/
+│   │   └── translateService.ts
+│   ├── types/
+│   │   ├── discord.d.ts      # Discord.js type extensions
+│   │   └── index.ts          # Shared type definitions
+│   ├── utils/
+│   │   ├── arrays.ts
+│   │   └── strings.ts
+│   ├── main.ts               # Bot entry point
+│   └── register.ts           # Command registration
+├── .env                      # Environment variables (not committed)
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── README.md
+```
 
 ---
 
-## `main.ts` — Bot Runtime
+## 🚀 Getting Started
 
-Handles:
-- connecting the bot
-- loading events + commands (including subfolders)
-- listening for interactions (slash + context menu)
-- executing the correct command
+### Prerequisites
 
-Run it with:
+- [Bun](https://bun.sh/) v1.0 or higher
+- Discord Bot Token ([Create one here](https://discord.com/developers/applications))
+- Node.js 18+ (for Discord.js compatibility)
 
-    bun run main.ts
+### Installation
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/your-username/parrot-bot.git
+cd parrot-bot
+```
+
+**2. Install dependencies**
+```bash
+bun install
+```
+
+**3. Configure environment variables**
+
+Create a `.env` file in the project root:
+```env
+TOKEN=your_discord_bot_token
+CLIENT_ID=your_application_client_id
+GUILD_ID=your_development_server_id  # Optional: for guild-specific commands
+```
+
+**4. Register commands**
+```bash
+bun run register
+```
+
+**5. Start the bot**
+```bash
+bun run start
+```
+
+### Development Mode
+
+Run with hot reload:
+```bash
+bun run dev
+```
 
 ---
 
-## `commands/` — Command Files
+## 📋 Commands
 
-Each file in this folder is one command.
-Commands can be in the root `commands/` folder or nested in subfolders (e.g. `commands/context/`).
+### Slash Commands
 
-### Slash command (example)
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/ping` | Check bot latency | Everyone |
+| `/translate` | Translate text to a specified language | Everyone |
+| `/stealpfp` | Get a user's profile picture by ID | Everyone |
+| `/langpanel` | Post language role selection panel | Administrator |
+| `/selfroles` | Post self-role selection panel | Administrator |
 
-```ts
+### Context Menu Commands
+
+| Command | Type | Description |
+|---------|------|-------------|
+| `Translate (Target Role)` | Message | Translate selected message based on your language role |
+
+---
+
+## 🎮 Usage Guide
+
+### Translation
+
+**Slash Command:**
+```
+/translate msg:Hello, how are you? langcode:ja
+```
+
+**Context Menu:**
+1. Right-click any message
+2. Navigate to **Apps** → **Translate (Target Role)**
+3. Translation uses your assigned language role (defaults to English)
+
+### Language Panel
+
+Administrators can create a language selection panel:
+```
+/langpanel
+```
+
+Users click buttons to set their target translation language. Only one language role is active at a time.
+
+**Supported Languages:**
+- 🇬🇧 English (en)
+- 🇹🇭 Thai (th)
+- 🇯🇵 Japanese (ja)
+- 🇵🇭 Filipino (fil)
+- 🇮🇩 Indonesian (id)
+- 🇪🇬 Arabic - Egyptian (ar-eg)
+- 🇬🇭 Akan (ak)
+- 🇬🇭 Ewe (ee)
+- 🇬🇭 Ga (gaa)
+- 🇬🇭 Dagbani (dag)
+
+### Self-Roles Panel
+
+Administrators can create a role selection panel:
+```
+/selfroles
+```
+
+- Users select roles from the dropdown menu
+- Press **Submit** to apply selected roles
+- Press **Reset** to clear selection
+- Developer role is auto-assigned when submitting
+
+---
+
+## 🛠️ Development
+
+### Adding a New Slash Command
+
+Create a new file in `src/commands/slash/`:
+
+```typescript
 import { SlashCommandBuilder } from "discord.js";
-import type { Command } from "../types";
+import type { Command } from "../../types";
 
 export const command: Command = {
   data: new SlashCommandBuilder()
     .setName("example")
-    .setDescription("This is an example command"),
+    .setDescription("An example command"),
 
   async execute(interaction) {
-    if (!interaction.isChatInputCommand()) return;
     await interaction.reply("Hello from example command!");
   },
 };
 ```
 
----
+### Adding a Context Menu Command
 
-## Context Menu Commands (Right-click → Apps)
+Create a new file in `src/commands/context/`:
 
-Discord supports commands that appear when you **right-click a user or a message**:
-
-- **Message Context Menu**: right-click a message → Apps → your command
-- **User Context Menu**: right-click a user → Apps → your command
-
-### Message Context Menu (example)
-
-Create a file like `commands/context/ping-message.ts`:
-
-```ts
+```typescript
 import {
-  ContextMenuCommandBuilder,
   ApplicationCommandType,
+  ContextMenuCommandBuilder,
   MessageFlags,
-  type MessageContextMenuCommandInteraction,
 } from "discord.js";
+import type { MessageContextMenuCommandInteraction } from "discord.js";
 import type { Command } from "../../types";
 
 export const command: Command<MessageContextMenuCommandInteraction> = {
   data: new ContextMenuCommandBuilder()
-    .setName("Ping Message")
+    .setName("Example Action")
     .setType(ApplicationCommandType.Message),
 
   async execute(interaction) {
-    const msg = interaction.targetMessage;
-
+    const message = interaction.targetMessage;
+    
     await interaction.reply({
-      content: `Message content:\n> ${msg.content || "(no text)"}`,
+      content: `Message content: ${message.content}`,
       flags: MessageFlags.Ephemeral,
     });
   },
 };
 ```
 
-### User Context Menu (example)
+### After Adding Commands
 
-```ts
-import {
-  ContextMenuCommandBuilder,
-  ApplicationCommandType,
-  MessageFlags,
-  type UserContextMenuCommandInteraction,
-} from "discord.js";
-import type { Command } from "../../types";
-
-export const command: Command<UserContextMenuCommandInteraction> = {
-  data: new ContextMenuCommandBuilder()
-    .setName("User Info")
-    .setType(ApplicationCommandType.User),
-
-  async execute(interaction) {
-    const user = interaction.targetUser;
-
-    await interaction.reply({
-      content: `Selected user: ${user.tag}`,
-      flags: MessageFlags.Ephemeral,
-    });
-  },
-};
+Register the new commands with Discord:
+```bash
+bun run register
 ```
-
-After adding a context menu command, run:
-
-    bun run register.ts
 
 Then restart the bot:
-
-    bun run main.ts
-
----
-
-## Feature Notes
-
-### `/langpanel`
-Admin-only command to post a public language role panel.
-Users can only have one language role at a time. If a user has no language role, default is `en`.
-
-### `/selfroles`
-Admin-only command to post a public self role panel.
-Users pick roles and press Submit. Submit/Reset replies are ephemeral to reduce noise.
-
-### Context menu: `Translate`
-Right-click a message → Apps → Translate  
-Target language is based on the user's language role. Reply is ephemeral and plain text only.
+```bash
+bun run start
+```
 
 ---
 
-## How to Create a New Command
+## 📝 Scripts
 
-1. Create a new file inside `commands/` (or a subfolder)
-2. Export a `command` object using the `Command` interface
-3. Add your builder + execute logic
-4. Run:
+| Script | Description |
+|--------|-------------|
+| `bun run start` | Start the bot |
+| `bun run dev` | Start with hot reload |
+| `bun run register` | Register commands to Discord |
+| `bun run test` | Run tests with Vitest |
+| `bun run lint` | Type-check with TypeScript |
 
-    bun run register.ts
+---
 
-5. Run the bot:
+## ⚙️ Configuration
 
-    bun run main.ts
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `TOKEN` | ✅ | Discord bot token |
+| `CLIENT_ID` | ✅ | Discord application ID |
+| `GUILD_ID` | ❌ | Guild ID for dev commands (instant updates) |
+
+### Role Configuration
+
+Edit `src/constants/roles.ts` to customize:
+- `EXCLUDED_ROLE_NAMES` - Roles excluded from self-role selection
+- `DEVELOPER_ROLE_NAME` - Auto-assigned developer role name
+
+### Language Configuration
+
+Edit `src/constants/languages.ts` to:
+- Add/remove supported languages in `LANG_CODES`
+- Map language codes to Google Translate codes in `TRANSLATE_TARGET`
+
+---
+
+## 🔧 Troubleshooting
+
+### Commands not appearing
+
+1. Ensure `bun run register` completed successfully
+2. Check bot has `applications.commands` scope
+3. Wait up to 1 hour for global commands (instant for guild commands)
+
+### Bot missing permissions
+
+Ensure the bot role has:
+- `Manage Roles` - For role assignment features
+- `Send Messages` - For responding to commands
+- `Manage Messages` - For URL moderation
+
+### Translation not working
+
+- Google Translate API may rate-limit frequent requests
+- Check network connectivity
+- Verify the language code is valid
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m "Add: amazing feature"`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- [Discord.js](https://discord.js.org/) - Discord API wrapper
+- [Bun](https://bun.sh/) - JavaScript runtime
+- [Google Translate](https://translate.google.com/) - Translation service
