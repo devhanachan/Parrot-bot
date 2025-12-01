@@ -1,10 +1,15 @@
 {
-  "name": "dcbot",
-  "module": "index.ts",
+  "name": "parrot-bot",
+  "version": "1.0.0",
+  "module": "src/main.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "vitest"
+    "start": "bun run src/main.ts",
+    "dev": "bun --watch run src/main.ts",
+    "register": "bun run src/register.ts",
+    "test": "vitest",
+    "lint": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -15,7 +20,6 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "axios": "^1.13.2",
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
     "zod": "^4.1.13"

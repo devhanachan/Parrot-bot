@@ -6,7 +6,7 @@ import type {
   ChatInputCommandInteraction,
   MessageContextMenuCommandInteraction,
   UserContextMenuCommandInteraction,
-  ClientEvents
+  ClientEvents,
 } from "discord.js";
 
 export type AnyInteraction =
@@ -20,13 +20,24 @@ export type CommandData =
   | SlashCommandOptionsOnlyBuilder
   | ContextMenuCommandBuilder;
 
-export type Event<K extends keyof ClientEvents = keyof ClientEvents> = {
+export interface Event<K extends keyof ClientEvents = keyof ClientEvents> {
   name: K;
   once?: boolean;
-  execute: (...args: ClientEvents[K]) => any | Promise<any>;
-};
+  execute: (...args: ClientEvents[K]) => Promise<void> | void;
+}
 
 export interface Command<T extends AnyInteraction = ChatInputCommandInteraction> {
   data: CommandData;
   execute: (interaction: T) => Promise<void>;
+}
+
+export interface TranslateResult {
+  translatedText: string;
+  detectedSource: string;
+}
+
+export interface TranslateEmbedOptions {
+  from: string;
+  to: string;
+  result: string;
 }
