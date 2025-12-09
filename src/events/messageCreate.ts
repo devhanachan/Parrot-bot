@@ -2,8 +2,12 @@ import { Events } from "discord.js";
 import type { Event } from "../types";
 
 const URL_REGEX = /https?:\/\/[^\s<>()]+/gi;
-
 const ALLOWED_DOMAINS = ["tenor.com", "discord.com", "github.com"];
+
+const ALLOWED_ROLES = [
+  "123456789012345678",
+  "987654321098765432",
+];
 
 function isAllowedHost(hostname: string) {
   const h = hostname.toLowerCase();
@@ -31,8 +35,17 @@ const event: Event<"messageCreate"> = {
   async execute(message) {
     if (message.author.bot) return;
     if (!message.channel.isSendable()) return;
+    if (!message.guild) return;
 
     if (!messageHasBlockedUrl(message.content)) return;
+
+    const member = message.member;
+    if (!member) return;
+
+    const hasAllowedRole = member.roles.cache.some((role) =>
+      ALLOWED_ROLES.includes(role.id),
+    );
+    if (hasAllowedRole) return;
 
     try {
       await message.delete();
