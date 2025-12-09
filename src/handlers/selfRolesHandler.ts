@@ -7,7 +7,7 @@ import type {
   StringSelectMenuInteraction,
 } from "discord.js";
 import { EXCLUDED_ROLE_NAMES, DEVELOPER_ROLE_NAME } from "../constants/roles";
-import { normalize } from "../utils/strings";
+import { LANG_CODES } from "../constants/languages";
 
 const selectionStore = new Map<string, string[]>();
 
@@ -155,6 +155,10 @@ function isAllowedSelfRole(guildId: string, role: Role): boolean {
   if (role.id === guildId) return false;
   if (role.managed) return false;
   if (EXCLUDED_ROLE_NAMES.has(role.name.toLowerCase())) return false;
+  
+  const normalizedName = role.name.toLowerCase().trim();
+  if (LANG_CODES.some(code => code.toLowerCase() === normalizedName)) return false;
+  
   return true;
 }
 
